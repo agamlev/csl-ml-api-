@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSL Won Probability API — Docs</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f7fa;
+      color: #1a1a2e;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+      color: white;
+      padding: 60px 40px;
+      text-align: center;
+    }
+
+    header h1 { font-size: 2.2rem; margin-bottom: 10px; }
+    header p  { font-size: 1.05rem; opacity: 0.75; }
+
+    .badge {
+      display: inline-block;
+      background: #e94560;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-top: 16px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    main {
+      max-width: 860px;
+      margin: 48px auto;
+      padding: 0 24px;
+    }
+
+    section { margin-bottom: 48px; }
+
+    h2 {
+      font-size: 1.3rem;
+      color: #0f3460;
+      border-left: 4px solid #e94560;
+      padding-left: 14px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    }
+
+    .endpoint {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #f0f4ff;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+
+    .method {
+      background: #0f3460;
+      color: white;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 5px 12px;
+      border-radius: 6px;
+      letter-spacing: 1px;
+    }
+
+    .url {
+      font-family: monospace;
+      font-size: 1rem;
+      color: #0f3460;
+      word-break: break-all;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+
+    thead tr { background: #f0f4ff; }
+    th { text-align: left; padding: 12px 16px; color: #0f3460; font-weight: 600; }
+    td { padding: 11px 16px; border-top: 1px solid #f0f0f0; vertical-align: top; }
+    tr:hover td { background: #fafbff; }
+
+    .tag {
+      display: inline-block;
+      background: #eef2ff;
+      color: #0f3460;
+      font-size: 0.78rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    pre {
+      background: #1a1a2e;
+      color: #a8d8ea;
+      border-radius: 10px;
+      padding: 24px;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+
+    .key   { color: #f7c59f; }
+    .value { color: #a8d8ea; }
+    .str   { color: #b5ead7; }
+
+    .steps { counter-reset: step; list-style: none; }
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    .steps li::before {
+      content: counter(step);
+      background: #e94560;
+      color: white;
+      font-weight: 700;
+      font-size: 0.85rem;
+      min-width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+    .steps li p { font-size: 0.95rem; line-height: 1.6; color: #444; }
+    .steps li strong { color: #1a1a2e; }
+
+    .bar-wrap { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+    .bar-label { width: 220px; font-size: 0.85rem; font-family: monospace; color: #555; }
+    .bar-bg { flex: 1; background: #eef2ff; border-radius: 20px; height: 10px; }
+    .bar-fill { height: 10px; border-radius: 20px; background: linear-gradient(90deg, #0f3460, #e94560); }
+    .bar-pct { font-size: 0.82rem; font-weight: 700; color: #0f3460; width: 40px; text-align: right; }
+
+    .verdict-row { display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
+    .verdict-card {
+      flex: 1;
+      min-width: 160px;
+      border-radius: 10px;
+      padding: 18px 20px;
+      text-align: center;
+    }
+    .verdict-card.won  { background: #e8f8f0; border: 1px solid #a8e6c7; }
+    .verdict-card.risk { background: #fff4f4; border: 1px solid #f5c0c0; }
+    .verdict-card .pct { font-size: 1.8rem; font-weight: 700; }
+    .verdict-card.won  .pct  { color: #1a7a4a; }
+    .verdict-card.risk .pct  { color: #c0392b; }
+    .verdict-card p { font-size: 0.85rem; color: #666; margin-top: 4px; }
+
+    footer {
+      text-align: center;
+      padding: 32px;
+      font-size: 0.82rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>CSL Won Probability API</h1>
+  <p>Predict the likelihood of closing a deal based on 6 customer signals</p>
+  <span class="badge">ML Powered</span>
+</header>
+
+<main>
+
+  <!-- ENDPOINT -->
+  <section>
+    <h2>Endpoint</h2>
+    <div class="card">
+      <div class="endpoint">
+        <span class="method">POST</span>
+        <span class="url">https://csl-ml-api.onrender.com/predict</span>
+      </div>
+      <p style="color:#666; font-size:0.9rem;">Send a JSON body with 6 customer parameters. Receive a win probability percentage in return.</p>
+    </div>
+  </section>
+
+  <!-- PARAMETERS -->
+  <section>
+    <h2>Request Parameters</h2>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Type</th>
+            <th>Valid Values</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag">customer_health_score</span></td>
+            <td>Integer</td>
+            <td>0 – 100</td>
+            <td>Overall customer health score</td>
+          </tr>
+          <tr>
+            <td><span class="tag">customer_plan</span></td>
+            <td>String</td>
+            <td>Basic / Pro / Premium / Enterprise</td>
+            <td>Customer subscription plan</td>
+          </tr>
+          <tr>
+            <td><span class="tag">usage_volume</span></td>
+            <td>Integer</td>
+            <td>0 – 2500</td>
+            <td>Product usage volume</td>
+          </tr>
+          <tr>
+            <td><span class="tag">restricted_feature_attempt</span></td>
+            <td>Integer</td>
+            <td>0 – 6</td>
+            <td>Attempts to access restricted features</td>
+          </tr>
+          <tr>
+            <td><span class="tag">feature_related_inquiry</span></td>
+            <td>Integer</td>
+            <td>0 – 5</td>
+            <td>Number of feature-related inquiries</td>
+          </tr>
+          <tr>
+            <td><span class="tag">csat_score</span></td>
+            <td>Float</td>
+            <td>1.0 – 5.0</td>
+            <td>Customer satisfaction score</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- REQUEST / RESPONSE -->
+  <section>
+    <h2>Example Request & Response</h2>
+    <div class="card" style="display:flex; gap:24px; flex-wrap:wrap;">
+      <div style="flex:1; min-width:260px;">
+        <p style="font-size:0.8rem; font-weight:700; color:#aaa; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px;">Request Body</p>
+        <pre>{
+  <span class="key">"customer_health_score"</span>: <span class="value">75</span>,
+  <span class="key">"customer_plan"</span>: <span class="str">"Pro"</span>,
+  <span class="key">"usage_volume"</span>: <span class="value">650</span>,
+  <span class="key">"restricted_feature_attempt"</span>: <span class="value">1</span>,
+  <span class="key">"feature_related_inquiry"</span>: <span class="value">3</span>,
+  <span class="key">"csat_score"</span>: <span class="value">4.2</span>
+}</pre>
+      </div>
+      <div style="flex:1; min-width:260px;">
+        <p style="font-size:0.8rem; font-weight:700; color:#aaa; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px;">Response</p>
+        <pre>{
+  <span class="key">"won_probability_%"</span>: <span class="value">87.3</span>,
+  <span class="key">"verdict"</span>: <span class="str">"likely won"</span>
+}</pre>
+        <div class="verdict-row">
+          <div class="verdict-card won">
+            <div class="pct">≥ 60%</div>
+            <p>likely won</p>
+          </div>
+          <div class="verdict-card risk">
+            <div class="pct">&lt; 60%</div>
+            <p>at risk</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAKE STEPS -->
+  <section>
+    <h2>How to Use in Make</h2>
+    <div class="card">
+      <ol class="steps">
+        <li><p>Add an <strong>HTTP → Make a Request</strong> module to your scenario.</p></li>
+        <li><p>Set the <strong>URL</strong> to <code style="background:#f0f4ff;padding:2px 6px;border-radius:4px;">https://csl-ml-api.onrender.com/predict</code> and <strong>Method</strong> to <code style="background:#f0f4ff;padding:2px 6px;border-radius:4px;">POST</code>.</p></li>
+        <li><p>Set <strong>Body content type</strong> to <strong>application/json</strong> and <strong>Body input method</strong> to <strong>JSON string</strong>.</p></li>
+        <li><p>Paste the JSON body with the 6 parameters — map each field from your previous modules (CRM, HubSpot, etc.).</p></li>
+        <li><p>Enable <strong>Parse response → Yes</strong> so Make can read <code style="background:#f0f4ff;padding:2px 6px;border-radius:4px;">won_probability_%</code> as a variable in the next step.</p></li>
+        <li><p>Add a <strong>Router</strong> after the HTTP module — route based on the probability value to trigger different actions (Slack alert, CRM update, email, etc.).</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- FEATURE IMPORTANCE -->
+  <section>
+    <h2>What Drives the Prediction</h2>
+    <div class="card">
+      <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">Feature importance learned by the model from training data:</p>
+      <div class="bar-wrap"><span class="bar-label">usage_volume</span><div class="bar-bg"><div class="bar-fill" style="width:77%"></div></div><span class="bar-pct">77%</span></div>
+      <div class="bar-wrap"><span class="bar-label">csat_score</span><div class="bar-bg"><div class="bar-fill" style="width:13%"></div></div><span class="bar-pct">13%</span></div>
+      <div class="bar-wrap"><span class="bar-label">customer_health_score</span><div class="bar-bg"><div class="bar-fill" style="width:7%"></div></div><span class="bar-pct">7%</span></div>
+      <div class="bar-wrap"><span class="bar-label">restricted_feature_attempt</span><div class="bar-bg"><div class="bar-fill" style="width:2%"></div></div><span class="bar-pct">2%</span></div>
+      <div class="bar-wrap"><span class="bar-label">feature_related_inquiry</span><div class="bar-bg"><div class="bar-fill" style="width:1%"></div></div><span class="bar-pct">1%</span></div>
+      <div class="bar-wrap"><span class="bar-label">customer_plan</span><div class="bar-bg"><div class="bar-fill" style="width:0.5%"></div></div><span class="bar-pct">0%</span></div>
+    </div>
+  </section>
+
+  <!-- MODEL INFO -->
+  <section>
+    <h2>Model Info</h2>
+    <div class="card">
+      <table>
+        <tbody>
+          <tr><td style="color:#aaa; width:200px;">Algorithm</td><td>Gradient Boosting Classifier</td></tr>
+          <tr><td style="color:#aaa;">Training data</td><td>10,000 records (50% won / 50% lost)</td></tr>
+          <tr><td style="color:#aaa;">AUC Score</td><td>0.9998</td></tr>
+          <tr><td style="color:#aaa;">Authentication</td><td>None</td></tr>
+          <tr><td style="color:#aaa;">Note</td><td>Free tier — first request after inactivity may take 50+ seconds</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer>CSL Won Probability API · Built with Gradient Boosting · Hosted on Render</footer>
+
+</body>
+</html>
